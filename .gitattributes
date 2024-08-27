@@ -2,3 +2,10 @@
 * text=auto
 # Força o Linguist a classificar arquivos .lua como Lua
 *.lua linguist-language=Lua
+
+# Diminui a relevância de TypeScript (ou outras linguagens) no cálculo
+*.ts linguist-detectable=false
+*.tsx linguist-detectable=false
+*.js linguist-detectable=false
+*.css linguist-detectable=false
+*.html linguist-detectable=false
