@@ -17,7 +17,7 @@ Este é um módulo de **Mobile Data Terminal (MDT)** desenvolvido para servidore
 
 1. **Clone o repositório**: Faça o download ou clone este repositório para a pasta `resources` do seu servidor FiveM.
    ```bash
-   git clone https://github.com/seuusuario/seu-repositorio.git
+   git clone https://github.com/Ayzrus/esx_mdtPolice.git
 2. **Configuração**: Edite o arquivo config.lua para ajustar as configurações do MDT de acordo com as necessidades do seu servidor.
    Inicie o recurso: Adicione o nome da pasta do MDT ao seu arquivo server.cfg para iniciar o recurso automaticamente com o servidor.
 3. **Inicie o recurso**: Adicione o nome da pasta do MDT ao seu arquivo server.cfg para iniciar o recurso automaticamente com o servidor.
