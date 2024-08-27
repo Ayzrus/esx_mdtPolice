@@ -15,7 +15,7 @@ interface NuiMessage {
 }
 
 const RootComponent = () => {
-  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [isVisible, setIsVisible] = useState<boolean>(true);
   const [agentInfo, setAgentInfo] = useState<AgentInfo | null>(null);
   const [agents, setAgents] = useState<Agents[]>([]);
   const [playersData, setPlayersData] = useState<PlayersData[]>([]);
@@ -80,7 +80,7 @@ const RootComponent = () => {
       const data = await fetchWithRetry('getInfoAgent', defaultOptions);
       setAgentInfo(data);
     } catch (error) {
-      console.error('Failed to fetch agent info:', error);
+      
     }
   };
 
@@ -89,7 +89,7 @@ const RootComponent = () => {
       const data = await fetchWithRetry('getAllAgents', defaultOptions);
       setAgents(data);
     } catch (error) {
-      console.error('Failed to fetch agent info:', error);
+      
     }
   };
 
@@ -98,7 +98,7 @@ const RootComponent = () => {
       const data = await fetchWithRetry('getAllPlayersData', defaultOptions);
       setPlayersData(data);
     } catch (error) {
-      console.error('Failed to fetch playersData info:', error);
+      
     }
   };
 

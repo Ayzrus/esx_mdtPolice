@@ -137,3 +137,40 @@ AddEventHandler('mdtpolice:requestAllPlayersData', function()
         TriggerClientEvent('mdtpolice:responseAllPlayersData', -1, players)
     end)
 end)
+
+RegisterNetEvent('findPlayerByDbId')
+AddEventHandler('findPlayerByDbId', function(dbPlayerId)
+    local foundPlayerSource = nil
+    print("Received dbPlayerId: " .. tostring(dbPlayerId))
+
+    -- Buscar o identifier associado ao dbPlayerId no banco de dados
+    MySQL.Async.fetchAll('SELECT identifier FROM users WHERE id = @dbPlayerId', {
+        ['@dbPlayerId'] = dbPlayerId
+    }, function(results)
+        if results and #results > 0 then
+            local steamIdentifier = results[1].identifier
+            print("Found steamIdentifier: " .. tostring(steamIdentifier))
+
+            -- Itera sobre todos os jogadores conectados para encontrar o jogador com o Steam ID
+            for _, playerId in ipairs(GetPlayers()) do
+                local xPlayer = ESX.GetPlayerFromId(playerId)
+                if xPlayer then
+                    local identifier = xPlayer.getIdentifier()
+                    print("Checking playerId: " .. tostring(playerId) .. " with identifier: " .. tostring(identifier))
+                    -- Comparar o identifier do jogador com o Steam ID obtido da base de dados
+                    if identifier == steamIdentifier then
+                        foundPlayerSource = playerId
+                        print(foundPlayerSource)
+                        break
+                    end
+                end
+            end
+        else
+            print("No identifier found for dbPlayerId: " .. tostring(dbPlayerId))
+        end
+
+        -- Envia a resposta de volta para o cliente
+        TriggerClientEvent('findPlayerResponse', -1, foundPlayerSource ~= nil, foundPlayerSource)
+    end)
+end)
+

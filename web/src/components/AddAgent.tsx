@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { PlayersData } from '../utils/types';
+import { defaultOptions, fetchWithRetry } from '../utils/fetchData';
 
 interface AddAgentProps {
   isOpen: boolean;
   playersData: PlayersData[];
-  onClose: () => void; // Added to handle close actions
+  onClose: () => void;
 }
 
 const AddAgent: React.FC<AddAgentProps> = ({ isOpen, onClose, playersData }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedItem, setSelectedItem] = useState<PlayersData | null>(null);
-  console.log(playersData)
 
   // Toggle dropdown visibility
   const handleToggleDropdown = () => setIsDropdownOpen(prev => !prev);
@@ -33,17 +33,30 @@ const AddAgent: React.FC<AddAgentProps> = ({ isOpen, onClose, playersData }) => 
 
   if (!isOpen) return null; // Render nothing if modal is not open
 
+  const handleHireClick = async () => {
+    if (selectedItem) {
+      try {
+        const dataToSend = {
+          playerId: selectedItem.Id, // Envia o ID do jogador selecionado
+        };
+        await fetchWithRetry('hire', defaultOptions, dataToSend);
+      } catch (error) {
+        console.error('Erro ao enviar a requisição:', error);
+      }
+    }
+  };
+
   return (
     <div
       id="hs-scale-animation-modal"
-      className="fixed inset-0 z-50 overflow-auto bg-gray-800 bg-opacity-50 flex items-center justify-center"
+      className="fixed inset-0 z-50 overflow-auto flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
       role="dialog"
       aria-labelledby="hs-scale-animation-modal-label"
       tabIndex={-1}
     >
-      <div className="bg-white dark:bg-neutral-800 border dark:border-neutral-700 shadow-lg rounded-xl w-full max-w-lg mx-4 sm:mx-6">
+      <div className="bg-white dark:bg-neutral-800 border dark:border-neutral-700 shadow-lg rounded-xl w-full max-w-lg mx-4 sm:mx-6 relative">
         <div className="flex justify-between items-center py-3 px-4 border-b dark:border-neutral-700">
-          <h3 id="hs-scale-animation-modal-label" className="text-gray-800 dark:text-white font-bold">
+          <h3 id="hs-scale-animation-modal-label" className="text-gray-800 dark:text-white font-bold text-lg">
             Contratar um novo Agente.
           </h3>
           <button
@@ -80,7 +93,7 @@ const AddAgent: React.FC<AddAgentProps> = ({ isOpen, onClose, playersData }) => 
               value={searchTerm || (selectedItem ? selectedItem.Nome : '')}
               onClick={handleToggleDropdown}
               onChange={handleSearch}
-              placeholder="Search or select a player"
+              placeholder="Procurar por um jogador"
             />
             <div
               className="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer"
@@ -106,7 +119,8 @@ const AddAgent: React.FC<AddAgentProps> = ({ isOpen, onClose, playersData }) => 
           </div>
           {isDropdownOpen && (
             <div
-              className="absolute z-50 w-full max-h-72 p-1 bg-white border border-gray-200 rounded-lg overflow-hidden overflow-y-auto dark:bg-neutral-900 dark:border-neutral-700"
+              className="mt-1 z-40 w-full max-h-60 p-1 bg-white border border-gray-200 rounded-lg overflow-y-auto dark:bg-neutral-900 dark:border-neutral-700"
+              style={{ top: '100%', left: 0 }}
             >
               {filteredPlayers.length > 0 ? (
                 filteredPlayers.map(player => (
@@ -145,12 +159,13 @@ const AddAgent: React.FC<AddAgentProps> = ({ isOpen, onClose, playersData }) => 
         <div className="flex justify-end gap-x-2 py-3 px-4 border-t dark:border-neutral-700">
           <button
             type="button"
-            className="py-2 px-3 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700"
+            className="py-2 px-3 text-sm font-medium rounded-lg border border-gray-200 bg-red-600 text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none dark:bg-red-800 dark:border-red-900 dark:text-white dark:hover:bg-red-900"
             onClick={onClose}
           >
             Fechar
           </button>
           <button
+            onClick={handleHireClick}
             type="button"
             className="py-2 px-3 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none"
           >

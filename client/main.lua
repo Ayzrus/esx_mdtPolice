@@ -78,7 +78,6 @@ end
 
 RegisterNUICallback('getAllPlayersData', function(_, cb)
     local playerData = ESX.GetPlayerData()
-    print("fui requsitado")
     if Config.JobAllow and isJobAllowed(playerData.job.name) then
         requestAllPlayersData()
     end
@@ -87,4 +86,21 @@ end)
 RegisterNetEvent('mdtpolice:responseAllPlayersData')
 AddEventHandler('mdtpolice:responseAllPlayersData', function(players)
     SendNUIMessage({ action = 'updateAllPlayersData', data = players })
+end)
+
+RegisterNUICallback('hire', function(data, cb)
+    local dbPlayerId = data.playerId -- ID do jogador na base de dados
+    print("ID do jogador na base de dados: " .. dbPlayerId)
+
+    -- Envia o ID do jogador para o servidor
+    TriggerServerEvent('findPlayerByDbId', dbPlayerId)
+end)
+
+RegisterNetEvent('findPlayerResponse')
+AddEventHandler('findPlayerResponse', function(success, foundPlayerSource)
+    responseReceived = true -- Define que a resposta foi recebida
+    if success then
+        foundPlayerSource = foundPlayerSource
+        ESX.ShowNotification("Aviso", foundPlayerSource, 5000, 'warning')
+    end
 end)
